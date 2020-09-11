@@ -41,7 +41,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: lokalise.com\n"
 "Language: ru\n"
 
 msgid "%d user likes this."
