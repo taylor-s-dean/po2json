@@ -1,0 +1,12 @@
+[submodule "rapidjson"]
+	path = rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+[submodule "CLI11"]
+	path = CLI11
+	url = https://github.com/CLIUtils/CLI11.git
+[submodule "third_party/CLI11"]
+	path = third_party/CLI11
+	url = https://github.com/CLIUtils/CLI11.git
+[submodule "third_party/rapidjson"]
+	path = third_party/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
