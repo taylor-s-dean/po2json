@@ -21,12 +21,12 @@
  */
 #include <string>
 
-#include "include/rapidjson/document.h"
-#include "include/CLI/App.hpp"
-#include "include/CLI/Formatter.hpp"
-#include "include/CLI/Config.hpp"
+#include "rapidjson/document.h"
+#include "CLI/App.hpp"
+#include "CLI/Formatter.hpp"
+#include "CLI/Config.hpp"
 
-#include "include/po2json.hpp"
+#include "po2json.hpp"
 
 int
 main(int argc, char** argv) {
