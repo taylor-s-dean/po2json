@@ -6,7 +6,6 @@ A CLI tool/library to facilitate the conversion of gettext Portable Object (PO) 
 ```sh
 git clone https://github.com/limitz404/po2json.git
 cd po2json
-git submodule update --init
 make
 ```
 

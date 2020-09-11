@@ -16,19 +16,20 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 _OBJ = po2json.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
+.PHONY: all clean
+.SECONDARY: main-build
+
+all: pre-build main-build
+
+main-build: po2json
 
 $(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
 
 po2json: $(OBJ)
-	make init
 	$(CXX) -o $@ $^ $(CFLAGS) $(LIBS)
 
-.PHONY: clean
-
-.PHONY: init
-
-init:
+pre-build:
 	@if git submodule status | egrep -q '^[-]|^[+]' ; then 		\
 		echo "INFO: Need to reinitialize git submodules"; 		\
 		git submodule update --init; 							\
