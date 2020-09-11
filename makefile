@@ -21,9 +21,20 @@ $(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
 
 po2json: $(OBJ)
+	make init
 	$(CXX) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
+
+.PHONY: init
+
+init:
+	@if git submodule status | egrep -q '^[-]|^[+]' ; then 		\
+		echo "INFO: Need to reinitialize git submodules"; 		\
+		git submodule update --init; 							\
+	else 														\
+		echo "INFO: No need to reinitialize git submodules"; 	\
+	fi
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
