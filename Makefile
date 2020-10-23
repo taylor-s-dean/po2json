@@ -1,7 +1,6 @@
 CXX = clang++
 CFLAGS = -I./third_party/CLI11/include \
-		 -I./third_party/rapidjson/include \
-		 -g3
+		 -I./third_party/rapidjson/include
 
 ODIR = obj
 LDIR = ./lib

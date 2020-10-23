@@ -213,8 +213,7 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
 
         // If this is a msgid line, then:
         // 1) msgid must be a valid state.
-        // 2) We expect the next line to be either a string, msgstr, or
-        // msgid_plural.
+        // 2) We expect the next line to be either a string, msgstr, or msgid_plural.
         if (std::regex_match(line, submatch, msgid_regex)) {
             expect_state(State::msgid);
             current_state = State::msgid;
@@ -246,8 +245,7 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
 
         // If this is a msgstr_plural line, then:
         // 1) msgstr_plural must be a valid state.
-        // 2) We expect the next line to be either a string, msgstr_plural, or
-        // blank.
+        // 2) We expect the next line to be either a string, msgstr_plural, or blank.
         if (std::regex_match(line, submatch, msgstr_plural_regex)) {
             expect_state(State::msgstr_plural);
             current_state = State::msgstr_plural;
