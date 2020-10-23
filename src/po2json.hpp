@@ -84,7 +84,7 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
     const std::regex msgid_plural_regex(R"(msgid_plural\s+\"(.*)\")");
     const std::regex msgstr_plural_regex(R"(msgstr\[\d+\]\s+\"(.*)\")");
     const std::regex string_regex(R"(\"(.*)\")");
-    const std::regex header_key_value(R"(([a-zA-Z0-9-]+): (.*?)\\n)");
+    const std::regex header_key_value(R"(([a-zA-Z0-9-]+)\s*:\s*(.*?)\\n)");
 
     std::set<State> valid_next_states{State::msgctxt, State::msgid};
 

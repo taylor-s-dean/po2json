@@ -14,7 +14,9 @@ DEPS = $(patsubst %,$(SDIR)/%,$(_DEPS))
 _OBJ = po2json.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-.PHONY: all clean
+INSTALL_DIR = ~/.local/bin
+
+.PHONY: all clean install
 .SECONDARY: main-build
 
 all: pre-build main-build
@@ -40,3 +42,9 @@ pre-build:
 
 clean:
 	rm -rf $(ODIR) *~ core $(INCDIR)/*~
+
+install: all
+	@if test ! -d $(INSTALL_DIR) ; then \
+		mkdir -p $(INSTALL_DIR);        \
+	fi
+	cp po2json $(INSTALL_DIR);
