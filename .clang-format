@@ -1,0 +1,59 @@
+---
+Language:                               Cpp
+Standard:                               Cpp11
+IndentWidth:                            4 # I resent this isn't 2
+ContinuationIndentWidth:                4
+TabWidth:                               8
+UseTab:                                 Never
+ColumnLimit:                            80
+
+DerivePointerAlignment:                 false
+PointerAlignment:                       Left
+AlwaysBreakAfterDefinitionReturnType:   All
+AlwaysBreakTemplateDeclarations:        true
+
+BinPackParameters:                      false
+BinPackArguments:                       false
+ExperimentalAutoDetectBinPacking:       false
+
+AlignAfterOpenBracket:                  AlwaysBreak
+AlignEscapedNewlinesLeft:               false
+AllowShortFunctionsOnASingleLine:       Empty
+AllowShortIfStatementsOnASingleLine:    false
+AllowShortBlocksOnASingleLine:          false
+AllowShortLoopsOnASingleLine:           true # probably
+AllowShortCaseLabelsOnASingleLine:      false
+BreakBeforeBraces:                      Attach
+BreakBeforeBinaryOperators:             NonAssignment
+AlwaysBreakBeforeMultilineStrings:      true
+
+SpaceBeforeParens:                      ControlStatements
+SpaceAfterCStyleCast:                   false
+SpaceInEmptyParentheses:                false
+SpacesInParentheses:                    false
+SpacesInSquareBrackets:                 false
+SpacesInAngles:                         false
+SpacesInCStyleCastParentheses:          false
+SpacesInContainerLiterals:              true # ugh
+SpaceBeforeAssignmentOperators:         true
+
+IndentCaseLabels:                       false
+MaxEmptyLinesToKeep:                    1 # so generous. this should be 0
+Cpp11BracedListStyle:                   true
+NamespaceIndentation:                   Inner # maybe all? but only with 2 spaces
+
+SpacesBeforeTrailingComments:           1
+AlignTrailingComments:                  true
+CommentPragmas:                         '^TODO:' # maybe XXX as well?
+
+AccessModifierOffset:                   -2 # llvm style stuff that's probably right
+BreakBeforeBinaryOperators:             false
+BreakBeforeTernaryOperators:            true
+PenaltyBreakBeforeFirstCallParameter:   19
+PenaltyBreakComment:                    300
+PenaltyBreakString:                     1000
+PenaltyBreakFirstLessLess:              120
+PenaltyExcessCharacter:                 100000
+
+SortIncludes:                           false
+ReflowComments:                         false

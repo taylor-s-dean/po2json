@@ -1,8 +1,7 @@
-IDIR = ./include
 CXX = clang++
-CFLAGS = -I$(IDIR) \
-		 -I./third_party/CLI11/include \
-		 -I./third_party/rapidjson/include
+CFLAGS = -I./third_party/CLI11/include \
+		 -I./third_party/rapidjson/include \
+		 -g3
 
 ODIR = obj
 LDIR = ./lib
@@ -11,7 +10,7 @@ SDIR = ./src
 LIBS =
 
 _DEPS = po2json.hpp
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+DEPS = $(patsubst %,$(SDIR)/%,$(_DEPS))
 
 _OBJ = po2json.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -36,6 +35,9 @@ pre-build:
 	else 														\
 		echo "INFO: No need to reinitialize git submodules"; 	\
 	fi
+	@if test ! -d $(ODIR) ; then \
+		mkdir $(ODIR);           \
+	fi
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
+	rm -rf $(ODIR) *~ core $(INCDIR)/*~

@@ -20,23 +20,23 @@
  * files to JSON files.
  */
 #include <cstdlib>
-#include <iterator>
-#include <sstream>
-#include <memory>
-#include <iostream>
 #include <fstream>
-#include <streambuf>
-#include <string>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <memory>
 #include <regex>
 #include <set>
-#include <map>
+#include <sstream>
+#include <streambuf>
+#include <string>
 #include <vector>
-#include <iomanip>
 
 #include "rapidjson/document.h"
+#include "rapidjson/filewritestream.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
-#include "rapidjson/filewritestream.h"
 
 namespace po2json {
 /**
@@ -84,6 +84,7 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
     const std::regex msgid_plural_regex(R"(msgid_plural\s+\"(.*)\")");
     const std::regex msgstr_plural_regex(R"(msgstr\[\d+\]\s+\"(.*)\")");
     const std::regex string_regex(R"(\"(.*)\")");
+    const std::regex header_key_value(R"(([a-zA-Z0-9-]+): (.*?)\\n)");
 
     std::set<State> valid_next_states{State::msgctxt, State::msgid};
 
@@ -106,35 +107,50 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
 #define add_key_to_json()                                                      \
     std::string msgctxt{current_key->msgctxt.str()};                           \
     std::string msgid{current_key->msgid.str()};                               \
-    if (msgid.length() != 0) {                                                 \
-        std::string msgstr{current_key->msgstr.str()};                         \
-        std::string msgid_plural{current_key->msgid_plural.str()};             \
-        std::vector<std::string> msgstr_plural;                                \
-        for (const std::stringstream& plural : current_key->msgstr_plural) {   \
-            msgstr_plural.push_back(plural.str());                             \
-        }                                                                      \
+    std::string msgstr{current_key->msgstr.str()};                             \
+    std::string msgid_plural{current_key->msgid_plural.str()};                 \
+    std::vector<std::string> msgstr_plural;                                    \
+    for (const std::stringstream& plural : current_key->msgstr_plural) {       \
+        msgstr_plural.push_back(plural.str());                                 \
+    }                                                                          \
                                                                                \
-        if (!po_json.HasMember(msgctxt.c_str())) {                             \
-            po_json.AddMember(                                                 \
-                rapidjson::Value(msgctxt.c_str(), po_json.GetAllocator())      \
-                    .Move(),                                                   \
-                rapidjson::Value().Move(),                                     \
-                po_json.GetAllocator());                                       \
-            po_json[msgctxt.c_str()].SetObject();                              \
-        }                                                                      \
-        rapidjson::Value& msgctxt_obj{po_json[msgctxt.c_str()]};               \
+    if (!po_json.HasMember(msgctxt.c_str())) {                                 \
+        po_json.AddMember(                                                     \
+            rapidjson::Value(msgctxt.c_str(), po_json.GetAllocator()).Move(),  \
+            rapidjson::Value().Move(),                                         \
+            po_json.GetAllocator());                                           \
+        po_json[msgctxt.c_str()].SetObject();                                  \
+    }                                                                          \
+    rapidjson::Value& msgctxt_obj{po_json[msgctxt.c_str()]};                   \
                                                                                \
-        if (!msgctxt_obj.HasMember(msgid.c_str())) {                           \
-            msgctxt_obj.AddMember(                                             \
-                rapidjson::Value(msgid.c_str(), po_json.GetAllocator())        \
-                    .Move(),                                                   \
-                rapidjson::Value().Move(),                                     \
-                po_json.GetAllocator());                                       \
-            msgctxt_obj[msgid.c_str()].SetObject();                            \
-        }                                                                      \
-        rapidjson::Value& msgid_obj{msgctxt_obj[msgid.c_str()]};               \
+    if (!msgctxt_obj.HasMember(msgid.c_str())) {                               \
+        msgctxt_obj.AddMember(                                                 \
+            rapidjson::Value(msgid.c_str(), po_json.GetAllocator()).Move(),    \
+            rapidjson::Value().Move(),                                         \
+            po_json.GetAllocator());                                           \
+        msgctxt_obj[msgid.c_str()].SetObject();                                \
+    }                                                                          \
+    rapidjson::Value& msgid_obj{msgctxt_obj[msgid.c_str()]};                   \
                                                                                \
-        if (msgstr.length() > 0) {                                             \
+    if (msgstr.length() > 0) {                                                 \
+        if (msgid.length() == 0) {                                             \
+            std::smatch smatch;                                                \
+            std::string s{msgstr};                                             \
+            while (std::regex_search(s, smatch, header_key_value)) {           \
+                std::string key{smatch.str(1)};                                \
+                std::string value{smatch.str(2)};                              \
+                s = smatch.suffix().str();                                     \
+                if (!msgid_obj.HasMember(key.c_str())) {                       \
+                    msgid_obj.AddMember(                                       \
+                        rapidjson::Value(key.c_str(), po_json.GetAllocator())  \
+                            .Move(),                                           \
+                        rapidjson::Value().Move(),                             \
+                        po_json.GetAllocator());                               \
+                }                                                              \
+                msgid_obj[key.c_str()].SetString(                              \
+                    value.c_str(), po_json.GetAllocator());                    \
+            }                                                                  \
+        } else {                                                               \
             if (!msgid_obj.HasMember("translation")) {                         \
                 msgid_obj.AddMember(                                           \
                     rapidjson::Value("translation", po_json.GetAllocator())    \
@@ -145,21 +161,20 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
             msgid_obj["translation"].SetString(                                \
                 msgstr.c_str(), po_json.GetAllocator());                       \
         }                                                                      \
-        if (msgstr_plural.size() > 0) {                                        \
-            if (!msgid_obj.HasMember("plurals")) {                             \
-                msgid_obj.AddMember(                                           \
-                    rapidjson::Value("plurals", po_json.GetAllocator())        \
-                        .Move(),                                               \
-                    rapidjson::Value().Move(),                                 \
-                    po_json.GetAllocator());                                   \
-                msgid_obj["plurals"].SetArray();                               \
-            }                                                                  \
-            for (const std::string& plural : msgstr_plural) {                  \
-                msgid_obj["plurals"].PushBack(                                 \
-                    rapidjson::Value(plural.c_str(), po_json.GetAllocator())   \
-                        .Move(),                                               \
-                    po_json.GetAllocator());                                   \
-            }                                                                  \
+    }                                                                          \
+    if (msgstr_plural.size() > 0) {                                            \
+        if (!msgid_obj.HasMember("plurals")) {                                 \
+            msgid_obj.AddMember(                                               \
+                rapidjson::Value("plurals", po_json.GetAllocator()).Move(),    \
+                rapidjson::Value().Move(),                                     \
+                po_json.GetAllocator());                                       \
+            msgid_obj["plurals"].SetArray();                                   \
+        }                                                                      \
+        for (const std::string& plural : msgstr_plural) {                      \
+            msgid_obj["plurals"].PushBack(                                     \
+                rapidjson::Value(plural.c_str(), po_json.GetAllocator())       \
+                    .Move(),                                                   \
+                po_json.GetAllocator());                                       \
         }                                                                      \
     }
 
@@ -198,7 +213,8 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
 
         // If this is a msgid line, then:
         // 1) msgid must be a valid state.
-        // 2) We expect the next line to be either a string, msgstr, or msgid_plural.
+        // 2) We expect the next line to be either a string, msgstr, or
+        // msgid_plural.
         if (std::regex_match(line, submatch, msgid_regex)) {
             expect_state(State::msgid);
             current_state = State::msgid;
@@ -230,7 +246,8 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
 
         // If this is a msgstr_plural line, then:
         // 1) msgstr_plural must be a valid state.
-        // 2) We expect the next line to be either a string, msgstr_plural, or blank.
+        // 2) We expect the next line to be either a string, msgstr_plural, or
+        // blank.
         if (std::regex_match(line, submatch, msgstr_plural_regex)) {
             expect_state(State::msgstr_plural);
             current_state = State::msgstr_plural;
