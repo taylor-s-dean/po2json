@@ -1,7 +1,5 @@
-IDIR = ./include
 CXX = clang++
-CFLAGS = -I$(IDIR) \
-		 -I./third_party/CLI11/include \
+CFLAGS = -I./third_party/CLI11/include \
 		 -I./third_party/rapidjson/include
 
 ODIR = obj
@@ -11,12 +9,14 @@ SDIR = ./src
 LIBS =
 
 _DEPS = po2json.hpp
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+DEPS = $(patsubst %,$(SDIR)/%,$(_DEPS))
 
 _OBJ = po2json.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-.PHONY: all clean
+INSTALL_DIR = ~/.local/bin
+
+.PHONY: all clean install
 .SECONDARY: main-build
 
 all: pre-build main-build
@@ -36,6 +36,15 @@ pre-build:
 	else 														\
 		echo "INFO: No need to reinitialize git submodules"; 	\
 	fi
+	@if test ! -d $(ODIR) ; then \
+		mkdir $(ODIR);           \
+	fi
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
+	rm -rf $(ODIR) *~ core $(INCDIR)/*~
+
+install: all
+	@if test ! -d $(INSTALL_DIR) ; then \
+		mkdir -p $(INSTALL_DIR);        \
+	fi
+	cp po2json $(INSTALL_DIR);
