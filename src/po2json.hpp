@@ -108,7 +108,6 @@ po2json(const std::string& file_contents, rapidjson::Document& po_json) {
     std::string msgctxt{current_key->msgctxt.str()};                           \
     std::string msgid{current_key->msgid.str()};                               \
     std::string msgstr{current_key->msgstr.str()};                             \
-    std::string msgid_plural{current_key->msgid_plural.str()};                 \
     std::vector<std::string> msgstr_plural;                                    \
     for (const std::stringstream& plural : current_key->msgstr_plural) {       \
         msgstr_plural.push_back(plural.str());                                 \
