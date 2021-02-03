@@ -28,6 +28,7 @@ Options:
 ```
 
 ### Example
+
 ```sh
 po2json ru.po --output-file ru.json
 ```
@@ -35,6 +36,7 @@ po2json ru.po --output-file ru.json
 ```sh
 cat ru.po
 ```
+
 ```po
 msgid ""
 msgstr ""
@@ -42,6 +44,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "%d user likes this."
 msgid_plural "%d users like this."
@@ -50,9 +53,12 @@ msgstr[1] "few"
 msgstr[2] "many"
 msgstr[3] "other"
 
-msgctxt "This is some context about the string."
-msgid "Accept language %{accept_language} was rejected"
-msgstr "Принять языки %{accept_language} были отклонены"
+msgctxt "This is some context "
+"about the string."
+msgid "Accept language "
+"%{accept_language} was rejected"
+msgstr "Принять "
+"языки %{accept_language} были отклонены"
 
 msgctxt "Button label"
 msgid "Log in"
@@ -70,11 +76,16 @@ msgid "One piggy went to the market."
 msgstr "Одна свинья ушла на рынок."
 
 #, fuzzy
-msgctxt "Context with plural"
-msgid "One piggy went to the market."
-msgid_plural "One piggy went to the market."
-msgstr[0] "Одна свинья ушла на рынок."
-msgstr[1] "%d свиньи пошли на рынок."
+msgctxt ""
+"Context with plural"
+msgid ""
+"One piggy went to the market."
+msgid_plural ""
+"One piggy went to the market."
+msgstr[0] ""
+"Одна свинья ушла на рынок."
+msgstr[1] ""
+"%d свиньи пошли на рынок."
 msgstr[2] "На рынок вышли %d поросят."
 msgstr[3] "%d поросят вышли на рынок."
 ```
@@ -82,9 +93,17 @@ msgstr[3] "%d поросят вышли на рынок."
 ```sh
 cat ru.json
 ```
+
 ```json
 {
     "": {
+        "": {
+            "MIME-Version": "1.0",
+            "Content-Type": "text/plain; charset=UTF-8",
+            "Content-Transfer-Encoding": "8bit",
+            "Language": "ru",
+            "Plural-Forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+        },
         "%d user likes this.": {
             "plurals": [
                 "one",
