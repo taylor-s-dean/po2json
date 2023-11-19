@@ -1,6 +1,6 @@
 # po2json
 
-![C/C++ CI](https://github.com/limitz404/po2json/workflows/C/C++%20CI/badge.svg?branch=master)
+[![C/C++ CI](https://github.com/taylor-s-dean/po2json/actions/workflows/c-cpp.yml/badge.svg?branch=master)](https://github.com/taylor-s-dean/po2json/actions/workflows/c-cpp.yml)
 
 A CLI tool/library to facilitate the conversion of gettext Portable Object (PO) files to JSON.
 
